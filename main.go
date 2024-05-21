@@ -13,8 +13,19 @@ type RomanNumeral struct {
 }
 
 var romanNumerals = []RomanNumeral{
-	{10, "X"}, {9, "IX"}, {8, "VIII"}, {7, "VII"}, {6, "VI"},
-	{5, "V"}, {4, "IV"}, {3, "III"}, {2, "II"}, {1, "I"},
+	{1000, "M"},
+	{900, "CM"},
+	{500, "D"},
+	{400, "CD"},
+	{100, "C"},
+	{90, "XC"},
+	{50, "L"},
+	{40, "XL"},
+	{10, "X"},
+	{9, "IX"},
+	{5, "V"},
+	{4, "IV"},
+	{1, "I"},
 }
 
 func toRoman(n int) string {
@@ -33,24 +44,16 @@ func toArabic(s string) (int, error) {
 		"I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6, "VII": 7, "VIII": 8, "IX": 9, "X": 10,
 	}
 
-	if value, exists := romanMap[s]; exists {
-		return value, nil
-	}
-
-	var result, lastValue int
+	var res int
 	for i := 0; i < len(s); i++ {
-		value, exists := romanMap[string(s[i])]
-		if !exists {
-			return 0, fmt.Errorf("неверный формат римского числа")
-		}
-		if i > 0 && value > lastValue {
-			result += value - 2*lastValue
+		if i+1 < len(s) && romanMap[string(s[i])] < romanMap[string(s[i+1])] {
+			res += romanMap[string(s[i+1])] - romanMap[string(s[i])]
+			i++
 		} else {
-			result += value
+			res += romanMap[string(s[i])]
 		}
-		lastValue = value
 	}
-	return result, nil
+	return res, nil
 }
 
 func calculate(a, b int, op string) (int, error) {
